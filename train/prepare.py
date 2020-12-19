@@ -10,18 +10,22 @@ class Prepare(object):
         self.params = params
         self.model_name = model_name
 
+        self.graph, self.test_data, self.dataset = None, None, None
+        self.emb_user, self.emb_item, self.emb_feat = None, None, None
+        self.model, self.optimizer = None, None
+
     def prepare_data(self):
         dataset = Dataset(dataset=self.params["dataset"])
         graph = dataset.get_dgl_graph().to(self.device)
         test_data = dataset.test_dict
-        n_user, n_item = dataset.n_users, dataset.n_items
-
-        return graph, test_data, n_user, n_item, dataset
+        self.graph, self.test_data, self.dataset = graph, test_data, dataset
+        return graph, test_data, dataset
 
     def prepare_embedding(self, n_user, n_item):
         emb_user = nn.Embedding(num_embeddings=n_user, embedding_dim=self.params["emb_dim"]).to(self.device)
         emb_item = nn.Embedding(num_embeddings=n_item, embedding_dim=self.params["emb_dim"]).to(self.device)
         emb_features = th.cat([emb_user.weight, emb_item.weight])
+        self.emb_user, self.emb_item, self.emb_feat = emb_user, emb_item, emb_features
         return emb_user, emb_item, emb_features
 
     def prepare_model(self, emb_features):
@@ -33,4 +37,6 @@ class Prepare(object):
         optimizer = th.optim.Adam([{"params": model.parameters()},
                                    {"params": emb_features}],
                                   lr=self.params["lr"])
+        self.model, self.optimizer = model, optimizer
+
         return model, optimizer
