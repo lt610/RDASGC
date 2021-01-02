@@ -10,32 +10,39 @@ class Prepare(object):
         self.params = params
         self.model_name = model_name
 
-        self.graph, self.test_data, self.dataset = None, None, None
-        self.emb_user, self.emb_item, self.emb_feat = None, None, None
+        self.graph, self.test_dict, self.dataset = None, None, None
+        self.n_users, self.n_items = None, None
+        self.emb_users_ini, self.emb_items_ini, self.emb_features = None, None, None
         self.model, self.optimizer = None, None
 
     def prepare_data(self):
         dataset = Dataset(dataset=self.params["dataset"])
         graph = dataset.get_dgl_graph().to(self.device)
-        test_data = dataset.test_dict
-        self.graph, self.test_data, self.dataset = graph, test_data, dataset
-        return graph, test_data, dataset
+        test_dict = dataset.test_dict
+        self.graph, self.test_dict, self.dataset = graph, test_dict, dataset
+        self.n_users, self.n_items = dataset.n_users, dataset.n_items
+        return graph, test_dict, dataset
 
     def prepare_embedding(self, n_user, n_item):
-        emb_user = nn.Embedding(num_embeddings=n_user, embedding_dim=self.params["emb_dim"]).to(self.device)
-        emb_item = nn.Embedding(num_embeddings=n_item, embedding_dim=self.params["emb_dim"]).to(self.device)
-        emb_features = th.cat([emb_user.weight, emb_item.weight])
-        self.emb_user, self.emb_item, self.emb_feat = emb_user, emb_item, emb_features
-        return emb_user, emb_item, emb_features
+        emb_users_ini = nn.Embedding(num_embeddings=n_user, embedding_dim=self.params["emb_dim"]).to(self.device)
+        emb_items_ini = nn.Embedding(num_embeddings=n_item, embedding_dim=self.params["emb_dim"]).to(self.device)
 
-    def prepare_model(self, emb_features):
+        nn.init.normal_(emb_users_ini.weight, std=0.1)
+        nn.init.normal_(emb_items_ini.weight, std=0.1)
+
+        emb_features = th.cat([emb_users_ini.weight, emb_items_ini.weight])
+        self.emb_users_ini, self.emb_items_ini, self.emb_features = emb_users_ini, emb_items_ini, emb_features
+        return emb_users_ini, emb_items_ini, emb_features
+
+    def prepare_model(self, emb_users_ini, emb_items_ini):
         if self.model_name == "rdasgc":
             model = RDASGCNet(k=self.params["k"])
         else:
             pass
         model = model.to(self.device)
         optimizer = th.optim.Adam([{"params": model.parameters()},
-                                   {"params": emb_features}],
+                                   {"params": emb_users_ini.parameters()},
+                                   {"params": emb_items_ini.parameters()},],
                                   lr=self.params["lr"])
         self.model, self.optimizer = model, optimizer
 

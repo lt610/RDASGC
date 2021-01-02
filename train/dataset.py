@@ -13,14 +13,26 @@ class Dataset(object):
 
         self.mode_dict = {'train': 0, "test": 1}
         self.mode = self.mode_dict['train']
+        """
+        n_users: 训练集和测试集中所有user的数量，不过训练集和测试集
+        一般各自已经包含了所有的user和item，不然有的操作没法进行
+        """
         self.n_users = 0
         self.n_items = 0
         path = "data/{}".format(dataset)
         train_file = path + '/train.txt'
         test_file = path + '/test.txt'
         self.path = path
+        """
+        train_unique_users：N x 1，元素是user id，记录了训练集里所有的user
+        train_user：(N*?) x 1，元素是user id；长度(N*?)是为了和train_item对齐
+        train_item：(N*?) * 1，元素是item id，记录了训练集里所有user对应的item
+        """
         train_unique_users, train_item, train_user = [], [], []
         test_unique_users, test_item, test_user = [], [], []
+        """
+        train_data_size: 训练集中总的关系（边）数量
+        """
         self.train_data_size = 0
         self.test_data_size = 0
 
@@ -67,9 +79,14 @@ class Dataset(object):
 
         # (users,items), bipartite graph
         # 这里np.ones(...)标识了非零数据，trainUser标识了行号，trainItem标识了列号，就是对nXm矩阵的一个很简单的压缩
+        # 这里是用训练集构建的
         self.user_item_net = csr_matrix((np.ones(len(self.train_user)), (self.train_user, self.train_item)),
                                         shape=(self.n_users, self.n_items))
 
+        """
+        all_pos：N x ?的二维数组，元素是item id，记录了训练集里所有user对应的一阶item，作为正例
+        test_dict：N x ?的二维数组，元素是item id， 记录了测试集里所有user对应的存在直接关系（一阶）的item
+        """
         # pre-calculate
         self.all_pos = self.get_user_pos_items(list(range(self.n_users)))
         self.test_dict = self.build_test()

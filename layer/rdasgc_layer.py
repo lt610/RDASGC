@@ -11,6 +11,11 @@ class RADSGCLayer(nn.Module):
         self.k = k
 
     def forward(self, graph, features):
+        """
+        :param graph: 只包含边
+        :param features: (M+N) X F的embedding，M是item的数量，N是user的数量
+        :return: 传播后(M+N) X F的embedding
+        """
         g = graph.local_var()
         h = features
         results = [features]

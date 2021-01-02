@@ -19,4 +19,21 @@ def uniform_sample(dataset: Dataset):
             else:
                 break
         sample_result.append([user, pos_item, neg_item])
-        return np.array(sample_result)
+    return np.array(sample_result)
+
+
+# ？原作者是在to(device)之后shuffle的呀，会不会有什么影响，后续改进一下
+def shuffle(users, pos, neg):
+    indexs = np.arange(len(users))
+    np.random.shuffle(indexs)
+    return users[indexs], pos[indexs], neg[indexs]
+
+
+def minibatch(batch_size, *tensors):
+    if len(tensors) == 1:
+        for i in range(0, len(tensors[0]), batch_size):
+            yield tensors[0][i: i + batch_size]
+    else:
+        for i in range(0, len(tensors[0]), batch_size):
+            # ?tuple(a, b, c)为啥就会报错，而且生成的那个啥用来索引embedding也不行
+            yield tuple(x[i:i + batch_size] for x in tensors)

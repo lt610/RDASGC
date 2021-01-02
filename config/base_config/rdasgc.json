@@ -1,0 +1,23 @@
+{
+  "gpus": [0, 1, 2, 3],
+  "max_proc_num": 1,
+  "parallel_proc_num": 1,
+  "wait_time": 0,
+  "seed": 2020,
+
+  "params": {
+      "dataset": "gowalla",
+      "train_batch_size": 2048,
+      "test_batch_size": 100,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+
+      "lr": 0.001,
+      "weight_decay": 1e-4,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    }
+}
