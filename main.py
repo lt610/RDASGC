@@ -41,14 +41,17 @@ def main(gpus, max_proc_num, seed, model_name, params):
         set_random_state(random_seeds[run])
 
         for epoch in range(1, params['num_epochs'] + 1):
+            prepare.prepare_features(prepare.emb_users_ini, prepare.emb_items_ini)
             avg_loss = train(prepare, params["train_batch_size"], params["weight_decay"])
 
             log_rec_metric(ex, epoch, {"avg_loss": avg_loss})
-            if epoch % 1 == 0:
+            if epoch % 5 == 0:
+                print("Test")
                 recall, precis, ndcg = test(prepare, params["test_batch_size"])
                 metric = {"precis": precis,
                            "recall": recall,
                            "ndcg": ndcg
                            }
                 log_rec_metric(ex, epoch, metric)
+
 

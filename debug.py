@@ -66,4 +66,3 @@ def test_uniform_sample():
     uniform_sample(dataset)
 
 
-test_embedding()

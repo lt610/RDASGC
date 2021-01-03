@@ -31,7 +31,7 @@ def test(prepare, test_batch_size):
                 exc_items.extend(items)
             rating[exc_idxs, exc_items] = -(1<<10)
             _, batch_pred = th.topk(rating, k=topk)
-            batch_pred = batch_users.cpu()
+            batch_pred = batch_pred.cpu()
             # 放在这儿不好吧，有时间了好好封装一下
             batch_pred = tran_one_zero(batch_labels, batch_pred)
             precis_t, recall_t = recall_and_precis_atk(batch_labels, batch_pred, topk)

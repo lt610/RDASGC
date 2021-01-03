@@ -20,10 +20,11 @@ def ndgc_atk(test_data, pred_data, topk):
     for i, items in enumerate(test_data):
         n = min(topk, len(items))
         ideal_result[i, :n] = 1
-    idcg = np.sum(ideal_result * 1. / np.log2(np.arange(2, topk + 2)))
+    idcg = np.sum(ideal_result * 1. / np.log2(np.arange(2, topk + 2)), axis=1)
     idcg[idcg == 0.] = 1.
 
     dcg = pre_data * (1. / np.log2(np.arange(2, topk + 2)))
+    dcg = np.sum(dcg, axis=1)
 
     ndcg = dcg / idcg
     ndcg[np.isnan(ndcg)] = 0.

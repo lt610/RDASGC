@@ -30,9 +30,8 @@ class Prepare(object):
         nn.init.normal_(emb_users_ini.weight, std=0.1)
         nn.init.normal_(emb_items_ini.weight, std=0.1)
 
-        emb_features = th.cat([emb_users_ini.weight, emb_items_ini.weight])
-        self.emb_users_ini, self.emb_items_ini, self.emb_features = emb_users_ini, emb_items_ini, emb_features
-        return emb_users_ini, emb_items_ini, emb_features
+        self.emb_users_ini, self.emb_items_ini = emb_users_ini, emb_items_ini
+        return emb_users_ini, emb_items_ini
 
     def prepare_model(self, emb_users_ini, emb_items_ini):
         if self.model_name == "rdasgc":
@@ -42,8 +41,13 @@ class Prepare(object):
         model = model.to(self.device)
         optimizer = th.optim.Adam([{"params": model.parameters()},
                                    {"params": emb_users_ini.parameters()},
-                                   {"params": emb_items_ini.parameters()},],
+                                   {"params": emb_items_ini.parameters()}],
                                   lr=self.params["lr"])
         self.model, self.optimizer = model, optimizer
 
         return model, optimizer
+
+    def prepare_features(self, emb_users_ini, emb_items_ini):
+        emb_features = th.cat([emb_users_ini.weight, emb_items_ini.weight])
+        self.emb_features = emb_features
+        return emb_features

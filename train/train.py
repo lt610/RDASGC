@@ -49,7 +49,7 @@ def train(prepare, train_batch_size, weight_decay):
         optimizer.step()
         avg_loss += loss
     avg_loss /= n_batch
-    return avg_loss
+    return avg_loss.item()
 
 
 def print_split(content="-" * 10, n=45):
