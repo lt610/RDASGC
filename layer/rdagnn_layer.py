@@ -4,11 +4,18 @@ from torch.nn import Parameter
 import dgl.function as fn
 from torch.nn import functional as F
 
+from util.other_util import cal_gain
 
-class RADSGCLayer(nn.Module):
-    def __init__(self, k=2):
-        super(RADSGCLayer, self).__init__()
+
+class RDAGNNLayer(nn.Module):
+    def __init__(self, out_dim, k=2):
+        super(RDAGNNLayer, self).__init__()
+        self.s = Parameter(th.FloatTensor(out_dim, 1))
         self.k = k
+
+    def reset_parameters(self):
+        gain = cal_gain(F.sigmoid)
+        nn.init.xavier_normal_(self.s, gain=gain)
 
     def forward(self, graph, features):
         """
@@ -34,6 +41,7 @@ class RADSGCLayer(nn.Module):
             h = h * norm
             results.append(h)
         H = th.stack(results, dim=1)
-        # 后期可以试一试DAGNN
-        H = th.mean(H, dim=1)
+        S = F.sigmoid(th.matmul(H, self.s))
+        S = S.permute(0, 2, 1)
+        H = th.matmul(S, H).squeeze()
         return H

@@ -13,7 +13,7 @@ ex.observers.append(MongoObserver(url='10.192.9.196:27017',
 @ex.config
 def base_config():
     tags = "debug"
-    config_name = "rdasgc"
+    config_name = "rsgc"
     ex.add_config("config/base_config/{}.json".format(config_name))
     model_name = config_name.split("_")[0]
 
@@ -34,9 +34,9 @@ def main(gpus, max_proc_num, seed, model_name, params):
         prepare.prepare_embedding(prepare.n_users, prepare.n_items)
         prepare.prepare_model(prepare.emb_users_ini, prepare.emb_items_ini)
         n_log_run = 5
-        # 只记录前3 runs的logs
+        # 只记录前几个runs的logs
         if run < n_log_run:
-            print_split(" {}th run ".format(run))
+            print_split(" {}th run ".format(run+1))
 
         set_random_state(random_seeds[run])
 

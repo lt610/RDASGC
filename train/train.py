@@ -59,7 +59,7 @@ def print_split(content="-" * 10, n=45):
 def log_metric(epoch, **metric):
     info = "Epoch {:04d}".format(epoch)
     for key, value in metric.items():
-        info += " | {} {:.4f}".format(key, value)
+        info += " | {} {:.5f}".format(key, value)
     print(info)
 
 

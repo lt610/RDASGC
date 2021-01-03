@@ -6,6 +6,7 @@
   "seed": 2020,
 
   "params": {
+      "multicore": 5,
       "dataset": "gowalla",
       "train_batch_size": 2048,
       "test_batch_size": 100,

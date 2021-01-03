@@ -1,7 +1,9 @@
 import torch.nn as nn
 import torch as th
+
+from net.rdagnn_net import RDAGNNNet
 from train.dataset import Dataset
-from net.rdasgc_net import RDASGCNet
+from net.rsgc_net import RSGCNet
 
 
 class Prepare(object):
@@ -34,8 +36,13 @@ class Prepare(object):
         return emb_users_ini, emb_items_ini
 
     def prepare_model(self, emb_users_ini, emb_items_ini):
-        if self.model_name == "rdasgc":
-            model = RDASGCNet(k=self.params["k"])
+        if self.model_name == "rsgc":
+            model = RSGCNet(k=self.params["k"])
+        elif self.model_name == "rdagnn":
+            model = RDAGNNNet(
+                out_dim=self.params["emb_dim"],
+                k=self.params["k"]
+            )
         else:
             pass
         model = model.to(self.device)
