@@ -10,3 +10,5 @@ class RDAGNNNet(nn.Module):
     def forward(self, graph, features):
         h = self.rdagnn(graph, features)
         return h
+
+

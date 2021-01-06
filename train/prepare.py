@@ -37,7 +37,10 @@ class Prepare(object):
 
     def prepare_model(self, emb_users_ini, emb_items_ini):
         if self.model_name == "rsgc":
-            model = RSGCNet(k=self.params["k"])
+            model = RSGCNet(
+                k=self.params["k"],
+                aggr=self.params["aggr"]
+            )
         elif self.model_name == "rdagnn":
             model = RDAGNNNet(
                 out_dim=self.params["emb_dim"],
@@ -46,10 +49,11 @@ class Prepare(object):
         else:
             pass
         model = model.to(self.device)
-        optimizer = th.optim.Adam([{"params": model.parameters()},
+        optimizer = th.optim.Adam([{"params": model.parameters(), "weight_decay": self.params["param_regular"]},
                                    {"params": emb_users_ini.parameters()},
                                    {"params": emb_items_ini.parameters()}],
                                   lr=self.params["lr"])
+
         self.model, self.optimizer = model, optimizer
 
         return model, optimizer

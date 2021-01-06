@@ -3,20 +3,22 @@
   "max_proc_num": 1,
   "parallel_proc_num": 1,
   "wait_time": 0,
-  "seed": 2020,
+  "seed": 1222,
 
   "params": {
-      "multicore": 5,
       "dataset": "gowalla",
+      "multicore": 5,
       "train_batch_size": 2048,
-      "test_batch_size": 100,
+      "test_batch_size": 1000,
       "topk": 20,
       "emb_dim": 64,
 
       "k": 3,
+      "aggr": "mean",
 
       "lr": 0.001,
-      "weight_decay": 1e-4,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
 
       "num_epochs": 1000,
       "num_runs": 1

@@ -40,7 +40,7 @@ def test(prepare, test_batch_size):
             rating[exc_idxs, exc_items] = -(1<<10)
             _, batch_preds = th.topk(rating, k=topk)
             batch_preds = batch_preds.cpu()
-            # 放在这儿不好吧，有时间了好好封装一下
+
             batches_labels.append(batch_labels)
             batches_preds.append(batch_preds)
     labels_and_preds = zip(batches_labels, batches_preds, [topk for _ in range(len(batches_labels))])
@@ -57,6 +57,10 @@ def test(prepare, test_batch_size):
     recall /= len(test_users)
     precis /= len(test_users)
     ndcg /= len(test_users)
+
+    recall = round(recall, 5)
+    precis = round(precis, 5)
+    ndcg = round(ndcg, 5)
 
     if multicore > 0:
         pool.close()

@@ -2,7 +2,7 @@ import torch as th
 import torch.nn.functional as F
 
 
-def BPRLoss(weight_decay, emb_part_users_out, emb_pos_out, emb_neg_out,
+def BPRLoss(emb_regular, emb_part_users_out, emb_pos_out, emb_neg_out,
             emb_part_users_ini, emb_pos_ini, emb_neg_ini):
 
     reg_loss = (1 / 2) * (emb_part_users_ini.norm(2).pow(2) +
@@ -16,7 +16,7 @@ def BPRLoss(weight_decay, emb_part_users_out, emb_pos_out, emb_neg_out,
 
     loss = th.mean(F.softplus(neg_score - pos_score))
     # ？加在这里和加在adam优化器里有啥区别呢
-    bpr_loss = loss + weight_decay * reg_loss
+    bpr_loss = loss + emb_regular * reg_loss
 
     return bpr_loss
 

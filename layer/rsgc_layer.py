@@ -6,9 +6,14 @@ from torch.nn import functional as F
 
 
 class RSGCLayer(nn.Module):
-    def __init__(self, k=2):
+    def __init__(self, k=2, aggr="mean"):
+        """
+        :param k: propagation stps
+        :param agrr: layer agrregate方式，有mean和1/k两种
+        """
         super(RSGCLayer, self).__init__()
         self.k = k
+        self.aggr = aggr
 
     def forward(self, graph, features):
         """
@@ -33,7 +38,12 @@ class RSGCLayer(nn.Module):
             h = g.ndata.pop('h')
             h = h * norm
             results.append(h)
-        H = th.stack(results, dim=1)
-        # 后期可以试一试DAGNN
-        H = th.mean(H, dim=1)
+        if self.aggr == "mean":
+            H = th.stack(results, dim=1)
+            H = th.mean(H, dim=1)
+        elif self.aggr == "1/k":
+            H = results[0]
+            for i in range(1, len(results)):
+                emb = results[i] / (i + 1)
+                H = H + emb
         return H

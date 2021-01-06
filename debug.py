@@ -72,3 +72,11 @@ def test_embedding():
 def test_uniform_sample():
     dataset = Dataset("gowalla")
     uniform_sample(dataset)
+
+
+for i in range(100):
+    print(i)
+    if True:
+        if True:
+            if i > 10:
+                break

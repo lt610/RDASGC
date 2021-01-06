@@ -16,6 +16,7 @@ def base_config():
     config_name = "rsgc"
     ex.add_config("config/base_config/{}.json".format(config_name))
     model_name = config_name.split("_")[0]
+    ex_name = config_name
 
 @ex.automain
 def main(gpus, max_proc_num, seed, model_name, params):
@@ -31,6 +32,9 @@ def main(gpus, max_proc_num, seed, model_name, params):
     random_seeds = generate_random_seeds(seed, params["num_runs"])
 
     for run in range(params["num_runs"]):
+        # 一定要放在最前面，确保接下来的所有操作都是可复现的
+        set_random_state(random_seeds[run])
+
         prepare.prepare_embedding(prepare.n_users, prepare.n_items)
         prepare.prepare_model(prepare.emb_users_ini, prepare.emb_items_ini)
         n_log_run = 5
@@ -38,20 +42,32 @@ def main(gpus, max_proc_num, seed, model_name, params):
         if run < n_log_run:
             print_split(" {}th run ".format(run+1))
 
-        set_random_state(random_seeds[run])
+        counter = 0
+        best_score = 0
 
         for epoch in range(1, params['num_epochs'] + 1):
             prepare.prepare_features(prepare.emb_users_ini, prepare.emb_items_ini)
-            avg_loss = train(prepare, params["train_batch_size"], params["weight_decay"])
+            avg_loss = train(prepare, params["train_batch_size"], params["emb_regular"])
 
             log_rec_metric(ex, epoch, {"avg_loss": avg_loss})
-            if epoch % 5 == 0:
+
+            if epoch % 10 == 0:
                 print("Test")
                 recall, precis, ndcg = test(prepare, params["test_batch_size"])
                 metric = {"precis": precis,
                            "recall": recall,
                            "ndcg": ndcg
                            }
+
                 log_rec_metric(ex, epoch, metric)
+
+                # 临时的early stopping，后面有时间加上验证集，现在就算了，不想搞了
+                if recall > best_score:
+                    best_score = recall
+                    counter = 0
+                else:
+                    counter += 1
+                if counter > 5:
+                    break
 
 

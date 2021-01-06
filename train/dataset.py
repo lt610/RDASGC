@@ -59,7 +59,10 @@ class Dataset(object):
             for l in f.readlines():
                 if len(l) > 0:
                     l = l.strip('\n').split(' ')
-                    items = [int(i) for i in l[1:]]
+                    if l[1:][0] == '':
+                        continue
+                    else:
+                        items = [int(i) for i in l[1:]]
                     uid = int(l[0])
                     test_unique_users.append(uid)
                     test_user.extend([uid] * len(items))

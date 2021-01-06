@@ -1,0 +1,118 @@
+{
+  "gpus": [1, 2, 3],
+  "max_proc_num": 1,
+  "parallel_proc_num": 3,
+  "wait_time": 50,
+  "seed": 1222,
+
+  "params": {
+    "gowalla_mean": {
+      "dataset": "gowalla",
+      "multicore": 5,
+      "train_batch_size": 2048,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "mean",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    },
+    "gowalla_1/k": {
+      "dataset": "gowalla",
+      "multicore": 5,
+      "train_batch_size": 2048,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "1/k",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    },
+    "yelp2018_mean": {
+      "dataset": "yelp2018",
+      "multicore": 5,
+      "train_batch_size": 2048,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "mean",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    },
+    "yelp2018_1/k": {
+      "dataset": "yelp2018",
+      "multicore": 5,
+      "train_batch_size": 2048,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "1/k",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    },
+    "amazon-book_mean": {
+      "dataset": "amazon-book",
+      "multicore": 5,
+      "train_batch_size": 8192,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "mean",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    },
+    "amazon-book_1/k": {
+      "dataset": "amazon-book",
+      "multicore": 5,
+      "train_batch_size": 8192,
+      "test_batch_size": 1000,
+      "topk": 20,
+      "emb_dim": 64,
+
+      "k": 3,
+      "aggr": "1/k",
+
+      "lr": 0.001,
+      "emb_regular": 1e-4,
+      "param_regular": 0,
+
+      "num_epochs": 1000,
+      "num_runs": 1
+    }
+  }
+}

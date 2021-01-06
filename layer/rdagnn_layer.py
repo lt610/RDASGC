@@ -12,6 +12,7 @@ class RDAGNNLayer(nn.Module):
         super(RDAGNNLayer, self).__init__()
         self.s = Parameter(th.FloatTensor(out_dim, 1))
         self.k = k
+        self.reset_parameters()
 
     def reset_parameters(self):
         gain = cal_gain(F.sigmoid)

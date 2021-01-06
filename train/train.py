@@ -16,7 +16,7 @@ from util.emb_util import get_emb_out, split_emb_out, get_emb_ini
 from sacred import Experiment
 
 
-def train(prepare, train_batch_size, weight_decay):
+def train(prepare, train_batch_size, emb_regular):
     graph, test_dict, dataset = prepare.graph, prepare.test_dict, prepare.dataset
     emb_users_ini, emb_items_ini, emb_features = prepare.emb_users_ini, prepare.emb_items_ini, prepare.emb_features
     model, optimizer = prepare.model, prepare.optimizer
@@ -42,7 +42,7 @@ def train(prepare, train_batch_size, weight_decay):
         emb_part_users_ini, emb_pos_ini, emb_neg_ini = get_emb_ini(batch_users, batch_pos, batch_neg,
                                                                    emb_users_ini, emb_items_ini)
 
-        loss = BPRLoss(weight_decay, emb_part_users_out, emb_pos_out, emb_neg_out,
+        loss = BPRLoss(emb_regular, emb_part_users_out, emb_pos_out, emb_neg_out,
                        emb_part_users_ini, emb_pos_ini, emb_neg_ini)
         optimizer.zero_grad()
         loss.backward()
@@ -93,17 +93,18 @@ def get_gpu_proc_num(gpu=0, max_proc_num=2):
     return len(process)
 
 
-def get_free_gpu(gpus=[0], max_proc_num=2, max_wait=3600):
+def get_free_gpu(gpus=[0], max_proc_num=2, max_wait=28800):
     waited = 0
     while True:
         for i in range(max_proc_num):
             for gpu in gpus:
                 if get_gpu_proc_num(gpu) == i:
                     return gpu
+        print("There is no free gpu now. Waiting...")
         time.sleep(10)
         waited += 10
         if waited > max_wait:
-            raise Exception("There is no free gpu.")
+            raise Exception("There is no free gpu for {} hours.".format(max_wait // 3600))
 
 
 def exec_cmd(cmd):
