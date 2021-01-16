@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch as th
 
+from net.rappnp_net import RAPPNPNet
 from net.rdagnn_net import RDAGNNNet
 from train.dataset import Dataset
 from net.rsgc_net import RSGCNet
@@ -45,6 +46,11 @@ class Prepare(object):
             model = RDAGNNNet(
                 out_dim=self.params["emb_dim"],
                 k=self.params["k"]
+            )
+        elif self.model_name == "rappnp":
+            model = RAPPNPNet(
+                k=self.params["k"],
+                alpha=self.params["alpha"]
             )
         else:
             pass

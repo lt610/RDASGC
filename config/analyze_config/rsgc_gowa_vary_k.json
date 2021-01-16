@@ -1,7 +1,7 @@
 {
-  "gpus": [2, 3],
+  "gpus": [0, 1, 2],
   "max_proc_num": 2,
-  "parallel_proc_num": 4,
+  "parallel_proc_num": 2,
   "wait_time": 50,
   "seed": 1222,
 
@@ -14,9 +14,10 @@
       "emb_dim": [64],
 
       "k": [1, 2, 3, 4],
+      "aggr": ["none"],
 
-      "lr": [0.0001, 0.0005, 0.001, 0.01],
-      "emb_regular": [1e-4, 5e-4, 1e-3],
+      "lr": [0.001],
+      "emb_regular": [1e-4],
       "param_regular": [0],
 
       "num_epochs": [1000],

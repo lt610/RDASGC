@@ -1,13 +1,13 @@
 {
-  "gpus": [1, 2, 3],
+  "gpus": [2, 3],
   "max_proc_num": 2,
-  "parallel_proc_num": 6,
+  "parallel_proc_num": 4,
   "wait_time": 50,
   "seed": 1222,
 
   "params": {
       "dataset": ["gowalla"],
-      "multicore": [2],
+      "multicore": [0],
       "train_batch_size": [2048],
       "test_batch_size": [1000],
       "topk": [20],
@@ -16,7 +16,7 @@
       "k": [1, 2, 3, 4],
       "aggr": ["1/k"],
 
-      "lr": [0.0001, 0.0005, 0.001],
+      "lr": [0.0001, 0.0005, 0.001, 0.01],
       "emb_regular": [1e-4, 5e-4, 1e-3],
       "param_regular": [0],
 

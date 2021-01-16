@@ -52,7 +52,7 @@ def train(prepare, train_batch_size, emb_regular):
     return avg_loss.item()
 
 
-def print_split(content="-" * 10, n=45):
+def add_split(content="-" * 10, n=45):
     print("\n{} {} {}\n".format("-" * n, content, "-" * n))
 
 
@@ -101,8 +101,8 @@ def get_free_gpu(gpus=[0], max_proc_num=2, max_wait=28800):
                 if get_gpu_proc_num(gpu) == i:
                     return gpu
         print("There is no free gpu now. Waiting...")
-        time.sleep(10)
-        waited += 10
+        time.sleep(300)
+        waited += 300
         if waited > max_wait:
             raise Exception("There is no free gpu for {} hours.".format(max_wait // 3600))
 

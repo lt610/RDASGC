@@ -46,4 +46,6 @@ class RSGCLayer(nn.Module):
             for i in range(1, len(results)):
                 emb = results[i] / (i + 1)
                 H = H + emb
+        elif self.aggr == "none":
+            return results[-1]
         return H

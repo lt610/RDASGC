@@ -1,7 +1,7 @@
 from sacred import Experiment
 from sacred.observers import MongoObserver
 from train.prepare import Prepare
-from train.train import train, generate_random_seeds, set_random_state, get_free_gpu, print_split, log_metric, \
+from train.train import train, generate_random_seeds, set_random_state, get_free_gpu, add_split, log_metric, \
     log_rec_metric
 import torch as th
 from train.test import test
@@ -13,10 +13,19 @@ ex.observers.append(MongoObserver(url='10.192.9.196:27017',
 @ex.config
 def base_config():
     tags = "debug"
-    config_name = "rsgc"
-    ex.add_config("config/base_config/{}.json".format(config_name))
-    model_name = config_name.split("_")[0]
+    config_name = "rdagnn"
+    if tags == "debug":
+        ex.add_config('config/base_config/{}.json'.format(config_name))
+    elif tags == "final":
+        ex.add_config("config/best_config/{}.json".format(config_name))
+    elif tags == "search":
+        ex.add_config("config/search_config/{}.json".format(config_name))
+    elif tags == "analyze":
+        ex.add_config("config/analyze_config/{}.json".format(config_name))
+    else:
+        raise Exception("There is no {}".format(tags))
     ex_name = config_name
+    model_name = config_name.split("_")[0]
 
 @ex.automain
 def main(gpus, max_proc_num, seed, model_name, params):
@@ -40,7 +49,7 @@ def main(gpus, max_proc_num, seed, model_name, params):
         n_log_run = 5
         # 只记录前几个runs的logs
         if run < n_log_run:
-            print_split(" {}th run ".format(run+1))
+            add_split(" {}th run ".format(run + 1))
 
         counter = 0
         best_score = 0
@@ -67,7 +76,7 @@ def main(gpus, max_proc_num, seed, model_name, params):
                     counter = 0
                 else:
                     counter += 1
-                if counter > 5:
+                if counter >= 10:
                     break
 
 
