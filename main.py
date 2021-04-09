@@ -1,7 +1,7 @@
 from sacred import Experiment
 from sacred.observers import MongoObserver
 from train.prepare import Prepare
-from train.train import train, generate_random_seeds, set_random_state, get_free_gpu, add_split, log_metric, \
+from train.train import train, generate_random_seeds, set_random_state, get_free_gpu, log_split, log_metric, \
     log_rec_metric
 import torch as th
 from train.test import test
@@ -49,7 +49,7 @@ def main(gpus, max_proc_num, seed, model_name, params):
         n_log_run = 5
         # 只记录前几个runs的logs
         if run < n_log_run:
-            add_split(" {}th run ".format(run + 1))
+            log_split(" {}th run ".format(run + 1))
 
         counter = 0
         best_score = 0

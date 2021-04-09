@@ -52,7 +52,7 @@ def train(prepare, train_batch_size, emb_regular):
     return avg_loss.item()
 
 
-def add_split(content="-" * 10, n=45):
+def log_split(content="-" * 10, n=45):
     print("\n{} {} {}\n".format("-" * n, content, "-" * n))
 
 
